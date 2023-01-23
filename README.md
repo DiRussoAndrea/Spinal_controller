@@ -2,40 +2,40 @@
 
 SCONE scenario scripts containing experiments carried using the spinal controller.
 
-spinal_controller_main.scone: optimied gait using the spinal controller
+**spinal_controller_main.scone**: optimied gait using the spinal controller
 
-spinal_controller_imitate.scone: optimized from a reference solution using imitation.
+**spinal_controller_imitate.scone**: optimized from a reference solution using imitation.
 
-ong_main.scone: optimized gait with the controller proposed by Ong et al. (2019).
+**ong_main.scone**: optimized gait with the controller proposed by Ong et al. (2019).
 
-delay: colder containing the neural delay for the muscles modeled.
+**delay**: colder containing the neural delay for the muscles modeled.
 
-import:
-	- initializations: folder containing par files used to initializze the optimization and files containing initial states of the model.
-	- measures: folder containing scone files with the implementation of the cost function to optimize.
-	- models: folder containing osim models.
-	- CMA_settings.scone: scone file defining optimizer's parameters.
-	- ModelAndIntegrationSettings.scone: scone file defining teh integration method and accuracy.
+**import**:
+	- **initializations**: folder containing par files used to initializze the optimization and files containing initial states of the model.
+	- **measures**: folder containing scone files with the implementation of the cost function to optimize.
+	- **models**: folder containing osim models.
+	- **CMA_settings.scone**: scone file defining optimizer's parameters.
+	- **ModelAndIntegrationSettings.scone**: scone file defining teh integration method and accuracy.
 
-ong_controller:
-	- ong_2019.scone: implementation of Ong's controller (2019).
-	- ong_2019.scone: implementation of the balance controller from Ong et al. (2019).
+**ong_controller**:
+	- **ong_2019.scone**: implementation of Ong's controller (2019).
+	- **ong_2019.scone**: implementation of the balance controller from Ong et al. (2019).
 
-scripts: folder containing python scripts to generate graphs and perform the correlation analysis
-	- spinal_modulation: folder containing the experiments and scripts used for the correlation analysis.
-	- plot_neural_input.py: generate a graph checking the contribution of CPGs, reflexes, and balance to the motoneuron activity.
-	- plot_sim.py: plot kinematics, GRFs, and muscle activation.
-	- utils.py: python file where we implemented the functions used in the other scripts.
+**scripts**: folder containing python scripts to generate graphs and perform the correlation analysis
+	- **spinal_modulation**: folder containing the experiments and scripts used for the correlation analysis.
+	- **plot_neural_input.py**: generate a graph checking the contribution of CPGs, reflexes, and balance to the motoneuron activity.
+	- **plot_sim.py**: plot kinematics, GRFs, and muscle activation.
+	- **utils.py**: python file where we implemented the functions used in the other scripts.
 	
-spinal_controller:
-	- spinal_cntroller.scone: controller implementation.
-	- spinal_cntroller_no_cpgs.scone: controller implementation without CPGs parameters.
-	- spinal_disable_controller: spinal controller where all parameters are set to 0 (necessary to obtain the imitation solution).
+**spinal_controller**:
+	- **spinal_cntroller.scone**: controller implementation.
+	- **spinal_cntroller_no_cpgs.scone**: controller implementation without CPGs parameters.
+	- **spinal_disable_controller**: spinal controller where all parameters are set to 0 (necessary to obtain the imitation solution).
 	
-stastes: folder containing initial states to imitate. 
+**stastes**: folder containing initial states to imitate. 
 
 
-# Instruction to perform the three optmizations steps
+## Instruction to perform the three optmizations steps
 
 If you want to try obtaining a new solution from scratch with the proposed controller. However, these step are not necessary if you use the solution already provided (import/initializations/spinal.par).
 
