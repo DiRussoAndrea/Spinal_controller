@@ -1,0 +1,182 @@
+CompositeMeasure {
+	
+	MimicMeasure {
+		name = Mimic
+		weight = 10
+		file = states/healthy_gait.sto
+		include_states = "*.activation"
+	}
+	
+	# to avoid having large imputs, but not practical
+	#CompositeMeasure {
+		#name = InputLimits
+		#symmetric = 1
+		#weight = 5
+		#MuscleMeasure {
+			#muscle = tib_ant
+			#input { max = 0.9 abs_penalty = 1 mode = highest}
+			#}
+		#MuscleMeasure {
+			#muscle = soleus
+			#input { max = 0.9 abs_penalty = 1 mode = highest }
+			#}
+		#MuscleMeasure {
+			#muscle = gastroc
+			#input { max = 0.9 abs_penalty = 1 mode = highest }
+			#}
+		#MuscleMeasure {
+			#muscle = tib_ant
+			#input { min = 0.01 abs_penalty = 1 mode = lowest}
+			#}
+		#MuscleMeasure {
+			#muscle = soleus
+			#input { min = 0.01 abs_penalty = 1 mode = lowest }
+			#}
+		#MuscleMeasure {
+			#muscle = gastroc
+			#input { min = 0.01 abs_penalty = 1 mode = lowest }
+			#}
+		#}
+	
+	#GaitMeasure {
+		#name = Gait
+		#weight = 100
+		#threshold = 0.05
+		#termination_height = 0.85
+		#min_velocity = 1.0
+		#}
+	
+	# stay alive might help to obtain something that walks
+	StepMeasure {
+		weight = 10
+		name = SelfSelectedGait
+		termination_height = 0.85
+		stride_velocity { min = 1.0 max = 1.4 abs_penalty = 1 mode = average}
+		initiation_cycles = 1
+		penalize_falling = false
+		reward_stay_alive = true
+		reward_forward_movement = true
+	}
+	
+	EffortMeasure {
+		name = Effort
+		weight = 1
+		measure_type = Uchida2016
+		use_cost_of_transport = 1
+		specific_tension = 0.60e6
+		MuscleProperties {
+			MuscleProperties { muscle = hamstrings* slow_twitch_ratio = 0.499 }
+			MuscleProperties { muscle = bifemsh* slow_twitch_ratio = 0.529 }
+			MuscleProperties { muscle = glut_max* slow_twitch_ratio = 0.55 }
+			MuscleProperties { muscle = iliopsoas* slow_twitch_ratio = 0.5 }
+			MuscleProperties { muscle = rect_fem* slow_twitch_ratio = 0.387 }
+			MuscleProperties { muscle = vasti* slow_twitch_ratio = 0.484 }
+			MuscleProperties { muscle = gastroc* slow_twitch_ratio = 0.546 }
+			MuscleProperties { muscle = soleus* slow_twitch_ratio = 0.759 }
+			MuscleProperties { muscle = tib_ant* slow_twitch_ratio = 0.721 }
+			MuscleProperties { muscle = ercspn* slow_twitch_ratio = 0.6 }
+			MuscleProperties { muscle = intobl* slow_twitch_ratio = 0.56 }
+			MuscleProperties { muscle = extobl* slow_twitch_ratio = 0.58 }
+		}
+	}
+	
+	EffortMeasure {
+		name = Effort
+		weight = 0.5
+		measure_type = SquaredMuscleActivation
+		use_cost_of_transport = 1
+	}
+	
+	# introduced to reduce oscillations due to stretch reflex,
+	# but makes joint stiff
+	#CompositeMeasure {
+		#name = DofAcceleration
+		#symmetric = 1
+		#DofMeasure {
+			#weight = 0.002
+			## threshold = 0
+			#dof = ankle_angle
+			#acceleration { min = -5000 max = 5000 abs_penalty = 1 }
+			#}
+		#}
+	
+	Measure {
+		type = CompositeMeasure
+		name = AnkleLimits
+		weight = 0.1
+		threshold = 0
+		Measures {
+			Measure {
+				type = DofLimitMeasure
+				name = AnkleL
+				dof = ankle_angle_l
+				squared_force_penalty = 1
+			}
+			Measure {
+				type = DofLimitMeasure
+				name = AnkleR
+				dof = ankle_angle_r
+				squared_force_penalty = 1
+			}
+		}
+	}
+	Measure {
+		type = CompositeMeasure
+		name = KneeLimits
+		weight = 0.1
+		threshold = 0
+		Measures {
+			Measure {
+				type = DofLimitMeasure
+				name = KneeL
+				dof = knee_angle_l
+				squared_force_penalty = 1
+			}
+			Measure {
+				type = DofLimitMeasure
+				name = KneeR
+				dof = knee_angle_r
+				squared_force_penalty = 1
+			}
+		}
+	}
+	Measure {
+		type = CompositeMeasure
+		name = HipLimits
+		weight = 0.1
+		threshold = 0
+		Measures {
+			Measure {
+				type = DofLimitMeasure
+				name = HipL
+				dof = hip_flexion_l
+				squared_force_penalty = 1
+			}
+			Measure {
+				type = DofLimitMeasure
+				name = HipR
+				dof = hip_flexion_r
+				squared_force_penalty = 1
+			}
+		}
+	}
+	Measure {
+		type = BodyMeasure
+		name = HeadStabilityY
+		weight = 0.25
+		body = head
+		acceleration { min = -4.903325 max = 4.903325 squared_penalty = 1}
+		direction = [0 1 0]
+		offset = [0 0 0]
+	}
+	Measure {
+		type = BodyMeasure
+		name = HeadStabilityX
+		weight = 0.25
+		body = head
+		acceleration { min = -2.4516625 max = 2.4516625 squared_penalty = 1}
+		direction = [1 0 0]
+		offset = [0 0 0]
+	}
+}
+

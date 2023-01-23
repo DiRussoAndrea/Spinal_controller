@@ -1,0 +1,10 @@
+thread_priority = -2
+random_seed = 0
+lambda = 40
+mu = 0
+sigma = 5
+max_generations = 3000
+# min_improvement_factor_for_file_output = 1.05
+output_objective_result_files = 0
+# maximize_objective = 0
+max_threads = 8

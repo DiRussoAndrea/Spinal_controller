@@ -1,0 +1,10 @@
+bifemsh = 0.010
+rect_fem = 0.005
+hamstrings = 0.005
+glut_max = 0.005
+iliopsoas = 0.005
+vasti = 0.010
+gastroc = 0.02
+soleus = 0.02
+tib_ant = 0.02
+pelvis_tilt = 0.005

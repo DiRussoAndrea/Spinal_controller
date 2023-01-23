@@ -1,0 +1,105 @@
+CmaOptimizer {
+	# import CMA settings
+	<< import/CMA_settings.scone >>	
+	
+	# initialize from a previous guess
+	#init_file = import/initializations/spinal_imitate.par
+	#init_file = import/initializations/spinal_stable.par
+	#init_file = import/initializations/spinal_stable_perturbations.par
+	#init_file = import/initializations/spinal_no_cpgs_imitate.par
+	#init_file = import/initializations/spinal_good_ankle_perturbations.par
+	#init_file = import/initializations/spinal_internal_external_perturbations_1.par
+	#init_file = import/initializations/spinal_hip_cpgs_imitate.par
+	init_file = import/initializations/spinal.par
+	#init_file = import/initializations/spinal_slow.par
+	#init_file = import/initializations/spinal_cpgs_modulate.par
+	#init_file = import/initializations/spinal_fixed_reflexes_slow.par
+	#init_file = import/initializations/spinal_fixed_frequency.par
+	#init_file = import/initializations/spinal_fixed_frequency_slow.par
+	#init_file = import/initializations/spinal_fixed_cpgs.par
+	#init_file = import/initializations/spinal_fixed_cpgs_slow.par
+	#init_file = import/initializations/spinal_fixed_balance.par
+	#init_file = import/initializations/spinal_fixed_balance_slow.par
+	#init_file = import/initializations/spinal_no_balance_imitation.par
+	#init_file = import/initializations/best_imitate.par
+	use_init_file = 1
+	use_init_file_std = 0
+	#init_file_std_factor = 0
+	
+	SimulationObjective {
+		signature_prefix = DATE_TIME_EXACT
+		signature_postfix = spinal_controller
+		max_duration = 10
+		
+		ModelOpenSim3 {
+			model_file = import/models/gait9dof18musc_Thelen_20170320.osim
+			enable_external_forces = 1
+			# optimize initial state parameters
+			state_init_file = import/initializations/f0918_init_walk_20170205.sto
+			<< import/ModelAndIntegrationSettings.scone >>
+			
+			# used by pattern_formation_neurons_t in spinalController
+			PhaseOscillator {
+				omega = 4.5~0.1<3,7>
+				initial_phase = [3.14 0]
+				steps_ignore_phase_locking = 100  # do not adapt phase
+				synchronize_swing = 0
+			}
+			
+		}
+		
+		# controller
+		CompositeController {
+			# controller for gait, based on [Ong 2019]
+			<< ong_controller/ong_2019_pelvis_tilt.scone >>
+			
+			## spinal controller
+			#<< spinal_controller/spinal_disable_controller.scone >>	
+			<< spinal_controller/spinal_controller.scone >>	
+			#<< spinal_controller/spinal_controller_no_cpgs.scone >>	
+			
+			# perturbations
+			#PerturbationController {
+				#start_time = 3
+				#duration = 0.2
+				#interval = 2
+				#force = [ -100 0 0 ]
+				#body = pelvis
+				#position_offset = [ 0 0 0 ]
+				#}
+			#PerturbationController {
+				#start_time = 4
+				#duration = 0.2
+				#interval = 2
+				#force = [ 100 0 0 ]
+				#body = pelvis
+				#position_offset = [ 0 0 0 ]
+				#}
+			#PerturbationController {
+				#start_time = 6
+				#duration = 0.2
+				#interval = 2
+				#force = [ -100 0 0 ]
+				#body = pelvis
+				#position_offset = [ 0 0 0 ]
+				#}
+			#PerturbationController {
+				#start_time = 8
+				#duration = 0.2
+				#interval = 2
+				#force = [ 100 0 0 ]
+				#body = pelvis
+				#position_offset = [ 0 0 0 ]
+				#}
+			## add random actuator noise
+			#NoiseController {
+				#base_noise = 0.0
+				#proportional_noise = 0.01
+				#}
+			
+		}
+		# import measures
+		<< import/measures/measure.scone >>
+		#<< import/measures/measure_mimic_unstable.scone >>
+	}
+}

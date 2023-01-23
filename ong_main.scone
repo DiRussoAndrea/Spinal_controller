@@ -1,0 +1,30 @@
+CmaOptimizer {
+	# import CMA settings
+	<< import/CMA_settings.scone >>	
+	
+	# initialize from a previous guess
+	init_file = import/initializations/ong_best.par
+	
+	use_init_file = 1
+	use_init_file_std = 0
+	
+	SimulationObjective {
+		signature_prefix = DATE_TIME_EXACT
+		signature_postfix = ong_controller
+		max_duration = 10
+		OpenSimModel {
+			model_file = import/models/gait9dof18musc_Thelen_20170320.osim
+			state_init_file = import/initializations/f0918_init_walk_20170205.sto			
+			# import model and integration settings
+			<< import/ModelAndIntegrationSettings.scone >>
+			
+			
+			# import gait controller
+			<< ong_controller/ong_2019.scone >>
+			<< spinal_controller/spinal_disable_controller.scone >>	
+			
+		}
+		# import measures
+		<< import/measures/measure.scone >>
+	}
+}

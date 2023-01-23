@@ -1,0 +1,45 @@
+# Gait controller adapted from [Geyer & Herr 2010] by Thomas Geijtenbeek 
+# Version history
+# 9: Remove all reflexes and keep only pelvis tilt PD
+# 8: Moved 'symmetric' property to GaitStateController
+# 7: Changed C0 ranges to <-10,10>; fixes issue for negative C0 on glut_max during Liftoff
+# 6: Fixed sign on glut_max during LiftOff
+GaitStateController {
+	signature_postfix = "GH2010v8"
+	# stance_load_threshold = ~0.1<0.001,1>
+	stance_load_threshold = 0.1
+	leg_load_sensor_delay = 0
+	symmetric = 1
+	ConditionalControllers {
+		# Stance reflexes
+		ConditionalController {
+			states = "EarlyStance LateStance"
+			ReflexController {
+				DofReflex {
+						target = hamstrings
+						source = pelvis_tilt
+						delay = 0.005
+						P0 = 0~0.1<-0.5,0.5>
+						KP = 0.8~0.1<-10,10> 
+						KV = 0.5~0.1<-10,10> 
+					}
+					DofReflex {
+						target = glut_max
+						source = pelvis_tilt
+						delay = 0.005
+						P0 = 0~0.1<-0.5,0.5>
+						KP = 0.2~0.1<-10,10> 
+						KV = 0.7~0.1<-10,10> 
+					}
+					DofReflex {
+						target = iliopsoas
+						source = pelvis_tilt
+						delay = 0.005
+						P0 = 0~0.1<-0.5,0.5>
+						KP = -1.0~0.1<-10,10> 
+						KV = -1.0~0.1<-10,10> 
+					}
+			}
+		}
+	}
+}

@@ -1,0 +1,172 @@
+SegmentalController {
+	# generate graph of the network for inspection
+	generate_graph = true
+	
+	# neuron delay
+	sensory_delay_file = delay/neural_delay_testing.txt
+	
+	# baseclass neuron
+	tau = 0.01
+	# bias = 0.0~0.1<-0.5,0.5>
+	bias = 0
+	excitatory_synapse = 0.5~0.1<0,2>
+	inhibitory_synapse = -0.5~0.1<-2,0>
+	# excitatory_or_inhibitory_synapse = 0.0~0.1<-2,2>
+	
+	# SN sensory neurons
+	sensor_scale = 1.0
+	# sensor_scale = 1.0~0.1<0,2>
+	
+	# II neurons
+	length_offset = -0.8~0.1<-1.5,0>
+	
+	# Ia neurons
+	tau_Ia = 0.01
+	use_prochazka = true
+	velocity_offset = 0.0
+	
+	# Ib neurons
+	force_offset = 0.0
+	
+	# feed-forward neurons
+	# feed_forward_offset = 0
+	# default_phase_weight = 0.05~0.05<0,0.1>
+	
+	# reflex rules
+	ReflexRules {
+		# feed-forward neurons (no need due to pattern formation)
+		# ReflexRule {source_role = agonist source_neuron = FF action = excite destination_role = agonist destination_neuron = MN}
+		
+		# monosynpatic/disynaptic Ia excitation and reciprocal inhibition
+		ReflexRule {source_role = agonist source_neuron = SN_Ia action = excite destination_role = agonist destination_neuron = MN}
+		ReflexRule {source_role = agonist source_neuron = SN_Ia action = excite destination_role = agonist destination_neuron = IN_Ia}
+		ReflexRule {source_role = agonist source_neuron = IN_Ia action = inhibit destination_role = antagonist destination_neuron = IN_Ia}
+		ReflexRule {source_role = agonist source_neuron = IN_Ia action = inhibit destination_role = antagonist destination_neuron = MN}
+		
+		# II facilitation and reciprocal inhibition
+		ReflexRule {source_role = agonist source_neuron = SN_II action = excite destination_role = agonist destination_neuron = IN_II}
+		ReflexRule {source_role = agonist source_neuron = IN_II action = excite destination_role = agonist destination_neuron = MN}
+		ReflexRule {source_role = agonist source_neuron = IN_II action = inhibit destination_role = antagonist destination_neuron = MN} # T
+		
+		# Ib autogenic inhibitory
+		ReflexRule {source_role = agonist source_neuron = SN_Ib action = excite destination_role = agonist destination_neuron = IN_Ib}
+		ReflexRule {source_role = agonist source_neuron = IN_Ib action = inhibit destination_role = agonist destination_neuron = MN}
+		ReflexRule {source_role = agonist source_neuron = IN_Ib action = inhibit destination_role = antagonist destination_neuron = IN_Ib} # T		
+		
+		# common Ib facilitation to extensors
+		ReflexRule {source_role = extensor source_neuron = SN_Ib action = excite destination_role = extensor destination_neuron = IN_Ib+}
+		ReflexRule {source_role = extensor source_neuron = IN_Ib+ action = excite destination_role = extensor destination_neuron = MN}
+		
+		# Renshaw cells
+		ReflexRule {source_role = agonist source_neuron = MN action = excite destination_role = agonist destination_neuron = IN_RC}
+		ReflexRule {source_role = agonist source_neuron = IN_RC action = inhibit destination_role = agonist destination_neuron = MN}
+		ReflexRule {source_role = agonist source_neuron = IN_RC action = inhibit destination_role = antagonist destination_neuron = IN_RC}
+		ReflexRule {source_role = agonist source_neuron = IN_RC action = inhibit destination_role = antagonist destination_neuron = IN_Ia}
+	}
+	
+	# muscle organization
+	SpinalCordOrganization {
+		Organization {
+			agonist = gastroc
+			#synergists = [soleus]
+			antagonists = [tib_ant]
+			segments = [L5] # S1 S2
+			extensor = true
+		}
+		Organization {
+			agonist = soleus
+			#synergists = [gastroc]
+			antagonists = [tib_ant]
+			segments = [L5] # L5 S1 S2
+			extensor = true
+		}
+		Organization {
+			agonist = tib_ant
+			antagonists = [gastroc soleus]
+			segments = [L5] # L4 L5 S1
+		}
+		Organization {
+			agonist = iliopsoas
+			#synergists = [iliacus]
+			antagonists = [glut_max hamstrings]
+			segments = [L5] # L1 L2 L3 L4
+		}
+		Organization {
+			agonist = glut_max
+			#synergists = []
+			antagonists = [iliopsoas]
+			segments = [L5] # L5 S1 S2
+			extensor = true
+		}
+		Organization {
+			agonist = hamstrings
+			antagonists = [rect_fem vasti]
+			segments = [L5] # L4 L5 S1 S2
+			extensor = true
+		}
+		Organization {
+			agonist = vasti
+			antagonists = [hamstrings bifemsh]
+			segments = [L5] # L2 L3 L4
+			extensor = true
+			#excluded_neurons = [IN_Ia] # when no antagonist exclude IN_Ia
+		}
+		Organization {
+			agonist = bifemsh
+			antagonists = [rect_fem vasti]
+			segments = [L5] # L4 L5 S1 S2
+		}
+		Organization {
+			agonist = rect_fem
+			antagonists = [hamstrings bifemsh]
+			segments = [L5] # L4 L5 S1 S2
+			extensor = true
+		}
+	}
+	
+	# pattern formation feed-forward controller
+	Patterns{
+		RaisedCosine {
+			mean = 0.1#~0.1<0,0.2>
+			half_width = 0.2#~0.2<0.1,0.3>
+		}
+		RaisedCosine {
+			mean = 0.3#~0.3<0.2,0.4>
+			half_width = 0.2#~0.2<0.1,0.3>
+		}
+		RaisedCosine {
+			mean = 0.5#~0.5<0.4,0.6>
+			half_width = 0.2#~0.2<0.1,0.3>
+		}
+		RaisedCosine {
+			mean = 0.7#~0.7<0.6,0.8>
+			half_width = 0.2#~0.2<0.1,0.3>
+		}
+		RaisedCosine {
+			mean = 0.9#~0.9<0.8,1.0>
+			half_width = 0.2#~0.2<0.1,0.3>
+		}
+	}
+	pattern_muscle_weight = 0.1~0.1<-1,1>
+	
+	# root stability (used instead Geyer pelvis, but need improvement)
+	#RootStability {
+		#segment = L5
+		#}
+	#kp = ~1.2<-3,3>
+	#p0 = -0.105
+	#kv = ~0.25<-1,1>
+	
+	# direct connections
+	#DirectConnections {
+		#Connection {
+			#source_muscle = P0_r
+			#source_segment = L5
+			#source_neuron_type = PF
+			#action = excite_or_inhibit
+			#destination_muscle = gastroc_r
+			#destination_segment = L5
+			#destination_neuron_type = IN_Ia
+			#}
+		#}
+}
