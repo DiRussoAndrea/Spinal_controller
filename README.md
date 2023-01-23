@@ -1,5 +1,7 @@
 # Spinal controller
+The current git repository contains the necessary files to perform optimizations with the spinal controller. In order to run these files, it is necessary to the SCONE version found in https://gitlab.com/simgait/SCONE.git. The solutions contained in this repository have been obtained with Ubuntu 18.04.
 
+## Repository content
 SCONE scenario scripts containing experiments carried using the spinal controller.
 
 **spinal_controller_main.scone**: optimied gait using the spinal controller
