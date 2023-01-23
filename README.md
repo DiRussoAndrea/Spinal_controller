@@ -1,4 +1,4 @@
-# Spinal_controller
+# Spinal controller
 
 SCONE scenario scripts containing experiments carried using the spinal controller.
 
