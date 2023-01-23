@@ -36,7 +36,7 @@ SCONE scenario scripts containing experiments carried using the spinal controlle
 **stastes**: folder containing initial states to imitate. 
 
 
-## Instruction to perform the three optmizations steps
+## Instruction to perform the three optmization steps
 
 If you want to try obtaining a new solution from scratch with the proposed controller. However, these step are not necessary if you use the solution already provided (import/initializations/spinal.par).
 
