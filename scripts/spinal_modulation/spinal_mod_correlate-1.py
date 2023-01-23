@@ -6,8 +6,11 @@ import os
 import numpy as np
 import pandas as pd
 
+# Run after spinal_modulation_split.params.py
+
 class Energy_Study :
     def __init__(self):
+        # Experiment subfolders - Seperate analyses to be performed on each subfolder
         self.folder = ['fixed_cpgs', 'fixed_balance', 'fixed_frequency', 'fixed_reflexes', 'full_control']
         self.folders = ['']
         self.root_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
@@ -37,5 +40,6 @@ class Energy_Study :
 
 if __name__ == '__main__' :
     en = Energy_Study()
+    # To set experiment subfolder
     en.read_data(0)
     # en.append_data()

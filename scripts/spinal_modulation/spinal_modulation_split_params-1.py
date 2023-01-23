@@ -5,9 +5,12 @@
 import os
 import pandas as pd
 
+
+
 class Energy_Study :
     def __init__(self):
         self.state = None
+        # Experiment subfolders - Seperate analyses to be performed on each subfolder
         self.folder = ['fixed_cpgs', 'fixed_balance', 'fixed_frequency', 'fixed_reflexes', 'full_control']
         self.root_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
         self.current_path = None
@@ -20,7 +23,7 @@ class Energy_Study :
 
 
     def read_data(self, speed_flag):
-        self.current_path = self.root_path + '//spinal_modulation'
+        self.current_path = self.root_path + '//spinal-modulation'
         for path in os.listdir(self.current_path) :
             if (path.endswith(self.folder[speed_flag])):
                 for file in os.listdir(self.current_path + '//' + path):
@@ -34,7 +37,7 @@ class Energy_Study :
                         self.asteplengtharray.append(step_length)
                         self.astepdurationarray.append(step_duration)
                         file_path = self.current_path + '//' + path + '//' + file
-                        par = pd.read_table(file_path, delim_whitespace=True, header=None)
+                        par = pd.read_csv(file_path, delim_whitespace=True, header=None)
                         par.pop(2)
                         par.pop(3)
                         self.parindices = par.T.iloc[0].values
@@ -44,20 +47,19 @@ class Energy_Study :
                             self.setindex = True
                         print(self.partbl)
                         self.partbl = self.partbl.append(pd.Series(parvalues), ignore_index = True)
-                        self.parcount = self.parcount + 1
             
         print('speed', self.aspeedarray)
         print('sd', self.astepdurationarray)
         print('sl', self.asteplengtharray)
         df = {'speed' : self.aspeedarray, 'step_duration' : self.astepdurationarray, 'step_length' : self.asteplengtharray}
         df = pd.DataFrame.from_dict(df)
+        self.partbl.set_index = self.partbl.iloc[1]
         print(self.partbl)
-        print(df)
-        self.partbl.to_csv(self.current_path + "//fixed_balance//par.csv")
-        df.to_csv(self.current_path + "//fixed_balance//sslsd.csv")
+        df3 = pd.concat([self.partbl, df], axis=1)
+        df3.to_csv(self.current_path + "//fixed_balance//par.csv", header=None)
 
 
 if __name__ == '__main__' :
     en = Energy_Study()
-    en.read_data(0)
-    # en.append_data()
+    # To set experiment subfolder
+    en.read_data(1)
