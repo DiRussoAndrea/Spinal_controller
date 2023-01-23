@@ -11,11 +11,17 @@ SCONE scenario scripts containing experiments carried using the spinal controlle
 **delay**: colder containing the neural delay for the muscles modeled.
 
 **import**:
+
 	- **initializations**: folder containing par files used to initializze the optimization and files containing initial states of the model.
+	
 	- **measures**: folder containing scone files with the implementation of the cost function to optimize.
+	
 	- **models**: folder containing osim models.
+	
 	- **CMA_settings.scone**: scone file defining optimizer's parameters.
+	
 	- **ModelAndIntegrationSettings.scone**: scone file defining teh integration method and accuracy.
+	
 
 **ong_controller**:
 	- **ong_2019.scone**: implementation of Ong's controller (2019).
