@@ -1361,8 +1361,8 @@ def average_gait_cycles(data_frame, side, hs_time, to_time, trajectories):
             else:
                 val_new[i, :] = f(t_new)
         to_mean = np.mean(to_per)
-        average = np.mean(val_new, axis=0)
-        stand_dev = np.std(val_new, axis=0)
+        average = np.mean(val_new[2:-1], axis=0)
+        stand_dev = np.std(val_new[2:-1], axis=0)
         df_mean[traj] = average
         df_std[traj] = stand_dev
 
@@ -1395,14 +1395,14 @@ def plot_gait(state, side, color, ax, output_file=None):
         if traj == 'knee_angle_' + side:
             ax[i].plot(-gait_mean[traj], color)
             # to comment when comparing multiple simulations:
-            ax[i].fill_between(range(101), -(gait_mean[traj] - 0.5*gait_std[traj]), -(gait_mean[traj] + 0.5*gait_std[traj]),
+            ax[i].fill_between(range(101), -(gait_mean[traj] - gait_std[traj]), -(gait_mean[traj] + gait_std[traj]),
                                facecolor=color, alpha=0.5)
             ax[i].vlines(x=to_mean, ymin=0, ymax=80, colors='k', linestyles='dashed', label='_nolegend_')
             ax[i].set_ylim([0, 80])
         else:
             ax[i].plot(gait_mean[traj], color)
             # to comment when comparing multiple simulations:
-            ax[i].fill_between(range(101), gait_mean[traj] - 0.5*gait_std[traj], gait_mean[traj] + 0.5*gait_std[traj],
+            ax[i].fill_between(range(101), gait_mean[traj] - gait_std[traj], gait_mean[traj] + gait_std[traj],
                                facecolor=color, alpha=0.5)
             if traj == 'pelvis_tilt':
                 ax[i].vlines(x=to_mean, ymin=-17, ymax=-1, colors='k', linestyles='dashed', label='_nolegend_')
@@ -1464,8 +1464,8 @@ def plot_muscle(state, side, muscles, muscles_title, color, ax, output_file=None
         ax[i, j].set_xticks(range(0, 120, 20))
         ax[i, j].grid(True)
         # to comment when comparing multiple simulations:
-        ax[i, j].fill_between(range(101), muscles_mean[muscle] - 0.5 * muscles_std[muscle],
-                              muscles_mean[muscle] + 0.5 * muscles_std[muscle], facecolor=color, alpha=0.5)
+        ax[i, j].fill_between(range(101), muscles_mean[muscle] - muscles_std[muscle],
+                              muscles_mean[muscle] + muscles_std[muscle], facecolor=color, alpha=0.5)
         ax[i, j].vlines(x=to_mean, ymin=-0.1, ymax=1.3, colors='k', linestyles='dashed', label='_nolegend_')
         # do not comment:
         if i == len(ax) - 1:
